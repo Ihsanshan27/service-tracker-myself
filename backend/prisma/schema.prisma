@@ -1,0 +1,191 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum VehicleType {
+  MOTOR
+  MOBIL
+}
+
+enum ScheduleStatus {
+  SAFE
+  DUE_SOON
+  OVERDUE
+}
+
+enum DocumentType {
+  STNK
+  PAJAK
+  ASURANSI
+  GARANSI
+  LAINNYA
+}
+
+enum DocumentStatus {
+  SAFE
+  DUE_SOON
+  EXPIRED
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  name      String
+  password  String
+  role      Role       @default(USER)
+  vehicles  Vehicle[]
+  workshops Workshop[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Vehicle {
+  id              String            @id @default(cuid())
+  userId          String
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicleName     String
+  vehicleType     VehicleType
+  brand           String
+  model           String
+  year            Int
+  plateNumber     String
+  currentOdometer Int               @default(0)
+  photoUrl        String?
+  notes           String?
+  serviceRecords  ServiceRecord[]
+  schedules       ServiceSchedule[]
+  odometerLogs    OdometerLog[]
+  documents       VehicleDocument[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([userId])
+  @@index([vehicleType])
+}
+
+model MaintenanceItem {
+  id                   String            @id @default(cuid())
+  name                 String
+  description          String?
+  defaultIntervalKm    Int
+  defaultIntervalMonth Int
+  vehicleType          VehicleType
+  serviceRecords       ServiceRecord[]
+  schedules            ServiceSchedule[]
+  templates            ServiceTemplate[]
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  @@index([vehicleType])
+  @@unique([name, vehicleType])
+}
+
+model ServiceTemplate {
+  id                String          @id @default(cuid())
+  vehicleType       VehicleType
+  maintenanceItemId String
+  maintenanceItem   MaintenanceItem @relation(fields: [maintenanceItemId], references: [id], onDelete: Cascade)
+  intervalKm        Int
+  intervalMonth     Int
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@unique([vehicleType, maintenanceItemId])
+}
+
+model ServiceRecord {
+  id                String          @id @default(cuid())
+  vehicleId         String
+  vehicle           Vehicle         @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  maintenanceItemId String
+  maintenanceItem   MaintenanceItem @relation(fields: [maintenanceItemId], references: [id])
+  serviceDate       DateTime
+  odometerAtService Int
+  workshopName      String
+  cost              Decimal         @db.Decimal(12, 2)
+  notes             String?
+  invoiceImageUrl   String?
+  schedule          ServiceSchedule?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([vehicleId])
+  @@index([maintenanceItemId])
+  @@index([serviceDate])
+}
+
+model ServiceSchedule {
+  id                String           @id @default(cuid())
+  vehicleId         String
+  vehicle           Vehicle          @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  maintenanceItemId String
+  maintenanceItem   MaintenanceItem  @relation(fields: [maintenanceItemId], references: [id])
+  lastServiceRecordId String?         @unique
+  lastServiceRecord ServiceRecord?    @relation(fields: [lastServiceRecordId], references: [id], onDelete: SetNull)
+  lastServiceDate   DateTime?
+  lastServiceOdometer Int?
+  nextServiceDate   DateTime?
+  nextServiceOdometer Int?
+  status            ScheduleStatus    @default(SAFE)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@unique([vehicleId, maintenanceItemId])
+  @@index([status])
+}
+
+model OdometerLog {
+  id         String   @id @default(cuid())
+  vehicleId  String
+  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  odometer   Int
+  recordedAt DateTime
+  notes      String?
+  createdAt  DateTime @default(now())
+
+  @@index([vehicleId])
+  @@index([recordedAt])
+}
+
+model Workshop {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  address   String
+  phone     String
+  rating    Int?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model VehicleDocument {
+  id             String         @id @default(cuid())
+  vehicleId      String
+  vehicle        Vehicle        @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  documentType   DocumentType
+  documentName   String
+  documentNumber String?
+  expiryDate     DateTime?
+  fileUrl        String?
+  notes          String?
+  status         DocumentStatus @default(SAFE)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([vehicleId])
+  @@index([status])
+}
