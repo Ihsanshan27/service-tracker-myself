@@ -82,7 +82,7 @@ export function DashboardPage() {
         <Card title="Reminder Dokumen">
           <div className="mt-4 grid gap-3">
             {data.documentReminders.length === 0 ? <EmptyState title="Tidak ada dokumen yang mendekati expired" /> : data.documentReminders.map((doc) => (
-              <div key={doc.id} className="flex items-center justify-between rounded-lg border border-line bg-slate-50/70 p-3">
+              <div key={doc.id} className="subtle-panel flex items-center justify-between p-3">
                 <div>
                   <p className="font-semibold">{doc.documentName}</p>
                   <p className="text-sm text-muted">{doc.vehicle?.vehicleName} - {doc.documentType} - {doc.expiryDate?.slice(0, 10)}</p>

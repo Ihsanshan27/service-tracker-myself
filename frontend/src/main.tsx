@@ -17,6 +17,7 @@ import { WorkshopsPage } from './pages/WorkshopsPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { AdminDashboardPage, AdminMaintenanceItemsPage, AdminServiceTemplatesPage, AdminUsersPage } from './pages/AdminPages';
 import { ProfilePage } from './pages/ProfilePage';
+import { ThemeProvider } from './theme/ThemeContext';
 
 const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -59,8 +60,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </ThemeProvider>
   </React.StrictMode>,
 );

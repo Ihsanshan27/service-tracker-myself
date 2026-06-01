@@ -96,7 +96,7 @@ export function VehiclesPage() {
             <div className="flex gap-2">
               <Button type="submit">{editingId ? 'Update Kendaraan' : 'Simpan Kendaraan'}</Button>
               {editingId && (
-                <button type="button" onClick={resetForm} className="rounded-md border border-line px-4 py-2 text-sm font-semibold text-muted hover:text-ink">
+                <button type="button" onClick={resetForm} className="secondary-button">
                   Batal
                 </button>
               )}
@@ -105,21 +105,21 @@ export function VehiclesPage() {
         </Card>
         <div className="grid gap-4 md:grid-cols-2">
           {vehicles.length === 0 ? <EmptyState title="Belum ada kendaraan" /> : vehicles.map((vehicle) => (
-            <article key={vehicle.id} className="rounded-lg border border-white/80 bg-white/90 p-5 shadow-soft ring-1 ring-line/70 transition hover:shadow-lift">
+            <article key={vehicle.id} className="glass-panel p-5 transition duration-200 hover:-translate-y-0.5 hover:shadow-lift">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-lg font-bold text-ink">{vehicle.vehicleName}</p>
                   <p className="text-sm text-muted">{vehicle.brand} {vehicle.model} - {vehicle.year}</p>
                 </div>
-                <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-brand">{vehicle.vehicleType}</span>
+                <span className="rounded-full bg-brand-soft px-2.5 py-1 text-xs font-bold text-brand">{vehicle.vehicleType}</span>
               </div>
-              <div className="mt-5 rounded-lg bg-slate-50 p-3">
+              <div className="subtle-panel mt-5 p-3">
                 <p className="text-xs font-bold uppercase tracking-wide text-muted">Kilometer</p>
                 <p className="mt-1 text-lg font-bold text-ink">{vehicle.currentOdometer.toLocaleString('id-ID')} km</p>
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
-                <Link to={`/vehicles/${vehicle.id}`} className="rounded-md border border-line bg-white px-3 py-2 text-sm font-semibold text-muted shadow-sm hover:text-ink">Detail</Link>
-                <button type="button" onClick={() => startEdit(vehicle)} className="rounded-md border border-line bg-white px-3 py-2 text-sm font-semibold text-muted shadow-sm hover:text-ink">Edit</button>
+                <Link to={`/vehicles/${vehicle.id}`} className="secondary-button">Detail</Link>
+                <button type="button" onClick={() => startEdit(vehicle)} className="secondary-button">Edit</button>
                 <button type="button" onClick={() => setDeleteTarget(vehicle)} className="rounded-md border border-rose/30 px-3 py-2 text-sm font-semibold text-rose hover:bg-rose hover:text-white">Hapus</button>
               </div>
             </article>

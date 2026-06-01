@@ -1,6 +1,7 @@
-import { BarChart3, Car, ClipboardList, FileText, Gauge, Home, LogOut, Settings, ShieldCheck, Users, Wrench } from 'lucide-react';
+import { BarChart3, Car, ClipboardList, FileText, Gauge, Home, LogOut, Moon, Settings, ShieldCheck, SunMedium, Users, Wrench } from 'lucide-react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import { useTheme } from '../theme/ThemeContext';
 
 const userLinks = [
   { to: '/', label: 'Dashboard', icon: Home },
@@ -22,21 +23,22 @@ const adminLinks = [
 
 export function DashboardLayout() {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const links = user?.role === 'ADMIN' ? [...userLinks, ...adminLinks] : userLinks;
 
   return (
     <div className="min-h-screen lg:flex">
-      <aside className="border-r border-white/70 bg-white/85 shadow-soft backdrop-blur lg:fixed lg:inset-y-0 lg:w-72">
-        <div className="flex h-20 items-center gap-3 border-b border-line/80 px-6">
-          <div className="grid h-10 w-10 place-items-center rounded-lg bg-brand text-white shadow-soft">
+      <aside className="border-r border-line/60 bg-panel/70 shadow-soft backdrop-blur-xl lg:fixed lg:inset-y-0 lg:w-80">
+        <div className="flex h-24 items-center gap-4 border-b border-line/70 px-6">
+          <div className="grid h-12 w-12 place-items-center rounded-2xl bg-brand text-white shadow-soft">
             <Car size={22} />
           </div>
           <div>
-            <p className="text-base font-bold leading-tight text-ink">Vehicle Service</p>
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted">Tracker</p>
+            <p className="text-lg font-semibold tracking-tight text-ink">Vehicle Service</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-muted">Tracker</p>
           </div>
         </div>
-        <nav className="grid gap-1.5 p-4">
+        <nav className="grid gap-2 p-4">
           {links.map((link) => {
             const Icon = link.icon;
             return (
@@ -45,8 +47,8 @@ export function DashboardLayout() {
                 to={link.to}
                 end={link.to === '/'}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
-                    isActive ? 'bg-brand text-white shadow-soft' : 'text-muted hover:bg-slate-100 hover:text-ink'
+                  `flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition ${
+                    isActive ? 'bg-brand text-white shadow-soft' : 'text-muted hover:bg-panel-alt hover:text-ink'
                   }`
                 }
               >
@@ -56,7 +58,7 @@ export function DashboardLayout() {
             );
           })}
         </nav>
-        <div className="mx-4 mt-2 rounded-lg border border-line bg-slate-50 p-4">
+        <div className="mx-4 mt-2 rounded-3xl border border-line/60 bg-panel-alt/80 p-4">
           <div className="flex items-center gap-2 text-sm font-bold text-ink">
             <ShieldCheck size={17} className="text-mint" />
             {user?.role}
@@ -64,15 +66,21 @@ export function DashboardLayout() {
           <p className="mt-1 text-xs leading-5 text-muted">Kelola kendaraan, service, dokumen, dan laporan dari satu dashboard.</p>
         </div>
       </aside>
-      <div className="lg:ml-72 lg:flex-1">
-        <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-white/70 bg-white/80 px-4 shadow-sm backdrop-blur sm:px-8">
-          <div>
-            <p className="text-sm font-semibold text-ink">{user?.name}</p>
+      <div className="lg:ml-80 lg:flex-1">
+        <header className="sticky top-0 z-10 flex h-20 items-center justify-between border-b border-line/60 bg-panel/60 px-4 shadow-sm backdrop-blur-xl sm:px-8">
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-ink">{user?.name}</p>
             <p className="text-xs text-muted">{user?.email}</p>
           </div>
-          <button onClick={logout} className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-3 py-2 text-sm font-semibold text-muted shadow-sm transition hover:border-rose/30 hover:text-rose">
-            <LogOut size={16} /> Logout
-          </button>
+          <div className="flex items-center gap-3">
+            <button onClick={toggleTheme} className="secondary-button" aria-label={theme === 'light' ? 'Aktifkan night mode' : 'Aktifkan light mode'}>
+              {theme === 'light' ? <Moon size={16} /> : <SunMedium size={16} />}
+              {theme === 'light' ? 'Night' : 'Light'}
+            </button>
+            <button onClick={logout} className="secondary-button hover:border-rose/30 hover:text-rose">
+              <LogOut size={16} /> Logout
+            </button>
+          </div>
         </header>
         <main className="p-4 sm:p-8 lg:p-10">
           <Outlet />

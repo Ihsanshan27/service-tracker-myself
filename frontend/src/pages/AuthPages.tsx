@@ -1,19 +1,29 @@
 import { FormEvent, useState } from 'react';
+import { Moon, SunMedium } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Field, Input } from '../components/FormControls';
 import { useAuth } from '../auth/AuthContext';
+import { useTheme } from '../theme/ThemeContext';
 
 function AuthShell({ title, children }: { title: string; children: React.ReactNode }) {
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <main className="grid min-h-screen place-items-center p-4">
-      <section className="w-full max-w-md rounded-lg border border-white bg-white/90 p-8 shadow-lift ring-1 ring-line/70 backdrop-blur">
-        <div className="mb-7 flex items-center gap-3">
-          <div className="grid h-11 w-11 place-items-center rounded-lg bg-brand text-white shadow-soft">V</div>
+    <main className="relative grid min-h-screen place-items-center overflow-hidden p-4">
+      <button onClick={toggleTheme} className="secondary-button absolute right-4 top-4 z-10" aria-label={theme === 'light' ? 'Aktifkan night mode' : 'Aktifkan light mode'}>
+        {theme === 'light' ? <Moon size={16} /> : <SunMedium size={16} />}
+        {theme === 'light' ? 'Night' : 'Light'}
+      </button>
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-brand/10 to-transparent" />
+      <section className="glass-panel w-full max-w-md p-8 shadow-lift">
+        <div className="mb-7 flex items-center gap-4">
+          <div className="grid h-12 w-12 place-items-center rounded-2xl bg-brand text-white shadow-soft">V</div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-wide text-brand">Vehicle Service Tracker</p>
-            <h1 className="text-2xl font-bold text-ink">{title}</h1>
+            <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-brand">Vehicle Service Tracker</p>
+            <h1 className="text-3xl font-semibold tracking-tight text-ink">{title}</h1>
           </div>
         </div>
+        <p className="mb-6 max-w-sm text-sm leading-6 text-muted">Interface lebih bersih, fokus, dan nyaman dipakai siang maupun malam untuk mengelola kendaraan Anda.</p>
         {children}
       </section>
     </main>
@@ -49,7 +59,7 @@ export function LoginPage() {
         </Field>
         {error && <p className="text-sm text-rose">{error}</p>}
         <Button type="submit">Masuk</Button>
-        <Link className="text-sm font-semibold text-brand" to="/register">
+        <Link className="quiet-link" to="/register">
           Belum punya akun? Register
         </Link>
       </form>
@@ -88,7 +98,7 @@ export function RegisterPage() {
         </Field>
         {error && <p className="text-sm text-rose">{error}</p>}
         <Button type="submit">Buat Akun</Button>
-        <Link className="text-sm font-semibold text-brand" to="/login">
+        <Link className="quiet-link" to="/login">
           Sudah punya akun? Login
         </Link>
       </form>
