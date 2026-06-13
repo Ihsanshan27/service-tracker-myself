@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ActivityLogsModule } from './activity-logs/activity-logs.module';
 import { AuthModule } from './auth/auth.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { HealthModule } from './health/health.module';
 import { MaintenanceItemsModule } from './maintenance-items/maintenance-items.module';
+import { SystemSettingsModule } from './system-settings/system-settings.module';
 import { OdometerLogsModule } from './odometer-logs/odometer-logs.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ReportsModule } from './reports/reports.module';
@@ -19,6 +21,7 @@ import { WorkshopsModule } from './workshops/workshops.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
+    ActivityLogsModule,
     HealthModule,
     AuthModule,
     UsersModule,
@@ -32,6 +35,7 @@ import { WorkshopsModule } from './workshops/workshops.module';
     VehicleDocumentsModule,
     ReportsModule,
     DashboardModule,
+    SystemSettingsModule,
   ],
 })
 export class AppModule {}

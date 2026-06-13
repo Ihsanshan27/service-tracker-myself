@@ -54,6 +54,15 @@ async function upsertItems(items: (string | number)[][], vehicleType: VehicleTyp
 }
 
 async function main() {
+  await prisma.systemSetting.upsert({
+    where: { id: 'global' },
+    update: {},
+    create: {
+      id: 'global',
+      allowPublicRegistration: true,
+    },
+  });
+
   const password = await bcrypt.hash('admin123456', 12);
   await prisma.user.upsert({
     where: { email: 'admin@vehicletracker.com' },
